@@ -11,3 +11,4 @@ bot = telegram.Bot(token=TOKEN)
 chat_id = os.environ['chat_id_cosmos']
 bot.send_message(chat_id=chat_id,
                  text="Привет, в этой группе ты найдешь много замечательных фотографий связанных с космосом!")
+bot.send_document(chat_id=chat_id, document=open('img/apod.jpg', 'rb'))
