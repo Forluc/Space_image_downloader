@@ -1,10 +1,9 @@
 import os
 from datetime import date
-from os.path import splitext
 from pathlib import Path
-from urllib.parse import urlsplit
 from dotenv import load_dotenv
 import requests
+from all_func import get_img_format
 
 
 def get_nasa_picture_of_day(url, token):
@@ -23,12 +22,6 @@ def get_nasa_picture_of_day(url, token):
     filename = images_nasa_path / f'last_photo_{date.today()}{get_img_format(picture_url)}'
     with open(filename, 'wb') as file:
         file.write(response_picture.content)
-
-
-def get_img_format(url):
-    split_url = urlsplit(url)
-    img_format = splitext(split_url.path)
-    return img_format[1]
 
 
 def main():
