@@ -30,5 +30,6 @@ def main():
     else:
         fetch_spacex_last_launch('https://api.spacexdata.com/v5/launches/latest')
 
+
 if __name__ == '__main__':
     main()
