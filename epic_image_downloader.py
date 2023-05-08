@@ -1,36 +1,31 @@
 import datetime
 import os
-from pathlib import Path
 import argparse
 import requests
 from dotenv import load_dotenv
+import all_func
 
 
 def get_epic_image(_date, token):
     params = {
-        'api_key': f'{token}'
+        'api_key': token
     }
-    response_last_date = requests.get(f'https://api.nasa.gov/EPIC/api/natural/date/{_date}',
-                                      params=params)
-    response_last_date.raise_for_status()
-
-    name_last_image = response_last_date.json()[0]['image']
-
+    last_date_url = f'https://api.nasa.gov/EPIC/api/natural/date/{_date}'
+    name_last_image = all_func.get_url_response(url=last_date_url, params=params)[0]['image']
     last_img_response = requests.get(
         f'https://api.nasa.gov/EPIC/archive/natural/{_date.year}/{"{0:0>2}".format(_date.month)}/{"{0:0>2}".format(_date.day)}/png/{name_last_image}.png',
         params=params)
+    last_img_response.raise_for_status()
 
-    img_path = Path('EPIC_images')
-    img_path.mkdir(parents=True, exist_ok=True)
+    media_path = all_func.get_media_path('epic_images')
 
-    filename = img_path / f'img_{_date}.png'
-    with open(filename, 'wb') as file:
-        file.write(last_img_response.content)
+    filename = media_path / f'img_{_date}.png'
+    all_func.media_saving(filename, last_img_response)
 
 
 def get_last_date(token):
     params = {
-        'api_key': f'{token}'
+        'api_key': token
     }
     response = requests.get('https://api.nasa.gov/EPIC/api/natural/all', params=params)
     response.raise_for_status()
@@ -39,7 +34,7 @@ def get_last_date(token):
 
 def main():
     load_dotenv()
-    token = os.environ['api_key']
+    token = os.environ['NASA_API_KEY']
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--date', type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date(),
