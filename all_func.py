@@ -23,6 +23,8 @@ def get_url_response(url, params=None):
     return response.json()
 
 
-def media_saving(filename, response):
+def saving_media(filename, url, params=None):
+    response = requests.get(url, params=params)
+    response.raise_for_status()
     with open(filename, 'wb') as file:
         file.write(response.content)

@@ -12,17 +12,18 @@ def main():
     bot = telegram.Bot(token=token)
 
     chat_id = os.environ['TG_CHAT_ID']
-    time_delay = os.environ['TIME_DELAY']
+    time_delay = os.getenv('TIME_DELAY', default=14400)
+    media_path = os.getenv('MEDIA_PATH', default='images')
 
     images = []
-    for root, dirs, files in os.walk("img"):
+    for root, dirs, files in os.walk(media_path):
         for filename in files:
             images.append(filename)
 
     while True:
         for filename in images:
             try:
-                path = join('img', filename)
+                path = join(media_path, filename)
                 with open(path, 'rb') as file:
                     bot.send_document(chat_id=chat_id, document=file)
                 time.sleep(int(time_delay))
